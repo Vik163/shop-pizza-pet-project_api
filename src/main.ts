@@ -15,7 +15,9 @@ const httpsOptions = {
   key: readFileSync('../nest_security/pizzashop163.ru+4-key.pem'),
   cert: readFileSync('../nest_security/pizzashop163.ru+4.pem'),
 };
-const option = ['https://pizzashop63.online, https://127.0.0.1:3000'];
+const option = [
+  'https://pizzashop63.online, https://pizzashop163.ru, https://127.0.0.1:3000',
+];
 
 async function bootstrap() {
   // c https
