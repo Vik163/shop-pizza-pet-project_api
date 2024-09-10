@@ -3,9 +3,10 @@ import { ValidationPipe } from '@nestjs/common';
 import { readFileSync } from 'fs';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
-import { doubleCsrfProtection } from '../csrf.config';
+import { doubleCsrfProtection } from './config/csrf.config';
 import * as passport from 'passport';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const MongoStore = require('connect-mongo');
@@ -15,15 +16,22 @@ const httpsOptions = {
   key: readFileSync('../nest_security/pizzashop163.ru+4-key.pem'),
   cert: readFileSync('../nest_security/pizzashop163.ru+4.pem'),
 };
-const option = [
-  'https://pizzashop63.online, https://pizzashop163.ru, https://127.0.0.1:3000',
-];
 
 async function bootstrap() {
   // c https
   const app = await NestFactory.create(AppModule, {
     httpsOptions,
   });
+
+  const configService = app.get(ConfigService);
+
+  const port = configService.get<number>('port');
+  const option = configService.get<string[]>('option');
+  const dbAge = configService.get<number>('sessions.dbAge');
+  const sessCookieAge = configService.get<number>('sessions.cookieAge');
+  const mongoUrl = configService.get<string>('mongodb.mongoUrl');
+  const sessName = configService.get<string>('sessions.sessName');
+  const secretKey = configService.get<string>('sessions.secretKey');
 
   app.enableCors({
     origin: option,
@@ -36,12 +44,12 @@ async function bootstrap() {
   app.use(
     session({
       store: MongoStore.create({
-        mongoUrl: process.env.DB_MONGO,
+        mongoUrl: mongoUrl,
         // 30 дней
-        ttl: 30 * 24 * 60 * 60,
+        ttl: dbAge,
       }),
-      name: process.env.SESSION_NAME,
-      secret: process.env.SESSION_SECRET_KEY || 'this is a secret msg',
+      name: sessName,
+      secret: secretKey,
       // указывает, нужно ли пересохранять сессию в хранилище, если она не изменилась (по умолчанию false);
       resave: false,
       // если true, то в хранилище будут попадать пустые сессии;
@@ -51,7 +59,7 @@ async function bootstrap() {
         signed: true,
         sameSite: 'strict',
         // 30 дней
-        maxAge: 60 * 60 * 24 * 1000 * 30,
+        maxAge: sessCookieAge,
       },
     }),
   );
@@ -61,7 +69,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(doubleCsrfProtection);
 
-  await app.listen(8000);
-  console.log('server listen port 8000');
+  await app.listen(port);
+  console.log(`server listen port ${port}`);
 }
 bootstrap();

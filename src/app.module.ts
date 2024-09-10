@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { ActionsModule } from './actions/actions.module';
 import { OrderModule } from './order/order.module';
+import { config } from './config/configuration';
 
 @Module({
   imports: [
@@ -17,10 +18,11 @@ import { OrderModule } from './order/order.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      load: [config],
     }),
     TypeOrmModule.forRoot({
-      type: process.env.DB_TYPE,
-      host: '127.0.0.1',
+      type: 'mongodb',
+      host: process.env.DB_HOST || '127.0.0.1',
       port: process.env.DB_PORT,
       database: process.env.DB_BASE,
       synchronize: true,

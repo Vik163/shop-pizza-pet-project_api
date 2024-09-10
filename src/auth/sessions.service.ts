@@ -5,6 +5,7 @@ import session from 'express-session';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { UserService } from 'src/user/user.service';
+import { ConfigService } from '@nestjs/config';
 
 type TSess = session.Session & Partial<session.SessionData>;
 interface ISession extends TSess {
@@ -20,12 +21,16 @@ export class SessionsService {
   private _res: Response;
   private _sess: ISession;
   private _yaProvider?: boolean;
+  private _host: string;
 
   constructor(
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
     private readonly userService: UserService,
-  ) {}
+    private configService: ConfigService,
+  ) {
+    this._host = this.configService.get<string>('api');
+  }
 
   async handleSession(
     req: Request,
@@ -50,9 +55,7 @@ export class SessionsService {
             this._req.sessionStore.destroy(this._req.session.id, async () => {
               await this.cacheManager.del('sessionId');
 
-              this._res.redirect(
-                `https://pizzashop163.ru?user=${JSON.stringify(user)}`,
-              );
+              this._res.redirect(`${this._host}?user=${JSON.stringify(user)}`);
             });
           } else {
             this._createSession();
@@ -118,9 +121,7 @@ export class SessionsService {
     this._sess.save();
 
     this._yaProvider &&
-      this._res.redirect(
-        `https://pizzashop163.ru?user=${JSON.stringify(this._user)}`,
-      );
+      this._res.redirect(`${this._host}?user=${JSON.stringify(this._user)}`);
   }
 
   setSecondVisit() {
