@@ -21,4 +21,9 @@ export const config = (): ConfigProps => ({
     cookieAge: 60 * 60 * 24 * 1000 * 30,
     dbAge: 60 * 60 * 24 * 30,
   },
+
+  ya: {
+    id: process.env.YA_CLIENT_ID_SERVER || process.env.YA_CLIENT_ID,
+    secret: process.env.YA_CLIENT_SECRET_SERVER || process.env.YA_CLIENT_SECRET,
+  },
 });

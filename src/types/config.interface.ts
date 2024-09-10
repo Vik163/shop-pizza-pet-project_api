@@ -15,4 +15,8 @@ export interface ConfigProps {
     cookieAge: number;
     dbAge: number;
   };
+  ya: {
+    id: string;
+    secret: string;
+  };
 }

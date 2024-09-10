@@ -6,6 +6,7 @@ import { Cache } from 'cache-manager';
 import { TokensService } from './tokens.service';
 import { AuthService } from './auth.service';
 import { YandexTokensDto, YandexUserInfoDto } from './dto/auth.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthProvidersService {
@@ -13,6 +14,7 @@ export class AuthProvidersService {
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private configService: ConfigService,
   ) {}
 
   // Авторизация через Яндекс ======================================================
@@ -40,8 +42,10 @@ export class AuthProvidersService {
 
       if (code && state) {
         await this.cacheManager.del('state');
-        const clientSecret = process.env.YA_CLIENT_SECRET;
-        const clientId = process.env.YA_CLIENT_ID;
+        const clientSecret =
+          process.env.YA_CLIENT_SECRET_SERVER || process.env.YA_CLIENT_SECRET;
+        const clientId =
+          process.env.YA_CLIENT_ID_SERVER || process.env.YA_CLIENT_ID;
 
         const body = `grant_type=authorization_code&code=${code}&client_id=${clientId}&client_secret=${clientSecret}`;
         const response = await fetch('https://oauth.yandex.ru/token', {

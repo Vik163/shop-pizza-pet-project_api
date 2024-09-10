@@ -7,6 +7,8 @@ declare global {
       DB_PORT: number;
       DB_HOST: string;
       DB_MONGO: string;
+      YA_CLIENT_ID_SERVER: string;
+      YA_CLIENT_SECRET_SERVER: string;
       YA_CLIENT_ID: string;
       YA_CLIENT_SECRET: string;
       SESSION_SECRET_KEY: string;
