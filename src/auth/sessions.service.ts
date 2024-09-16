@@ -64,11 +64,8 @@ export class SessionsService {
       );
     } else {
       if (this._sess.userId) {
-        console.log('this._sess.userId:', this._sess.userId);
         this._updateSession();
       } else {
-        console.log('sess.userId:', this._req.cookies['sessPizza']);
-
         this._createSession();
       }
     }
