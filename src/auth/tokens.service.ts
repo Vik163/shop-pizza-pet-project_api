@@ -9,11 +9,15 @@ import { TokensDto } from './dto/tokens.dto';
 
 @Injectable()
 export class TokensService {
+  private _timeRefresh: number;
+
   constructor(
     private configService: ConfigService,
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) {
+    this._timeRefresh = this.configService.get<number>('time_refresh');
+  }
 
   // Хеширование refresh для БД (если будет пароль, то тоже)
   hashData(data: string): Promise<string> {
@@ -57,7 +61,7 @@ export class TokensService {
     const timeToken = this.handleTimeToken(user.refreshTokenData.createToken);
     console.log('timeToken:', timeToken);
     // время вышло => обновляем токен в БД и отправляем токены в куки
-    if (timeToken > process.env.TIME_REFRESH - 2) {
+    if (timeToken > this._timeRefresh - 2) {
       await this.updateRefreshToken(user, tokens.refreshToken);
       this.sendTokens(res, tokens);
     } else {
@@ -82,17 +86,15 @@ export class TokensService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret:
-          this.configService.get<string>('ACCESS_SECRET') ||
+          this.configService.get<string>('access_secret') ||
           'this is a secret ACCESS_SECRET',
-        // secret: process.env.ACCESS_SECRET,
         expiresIn: '10s',
       }),
       this.jwtService.signAsync(payload, {
         secret:
-          this.configService.get<string>('REFRESH_SECRET') ||
+          this.configService.get<string>('refresh_secret') ||
           'this is a secret REFRESH_SECRET',
-        // secret: process.env.REFRESH_SECRET,
-        expiresIn: `${this.configService.get<number>('TIME_REFRESH')}d`,
+        expiresIn: `${this._timeRefresh}d`,
         // expiresIn: `${process.env.TIME_REFRESH}d`,
       }),
     ]);
@@ -110,7 +112,7 @@ export class TokensService {
       res.cookie('refreshToken', tokens.refreshToken, {
         secure: true,
         httpOnly: true,
-        maxAge: 60 * 68 * 24 * 1000 * process.env.TIME_REFRESH,
+        maxAge: 60 * 60 * 24 * 1000 * this._timeRefresh,
       });
   }
 

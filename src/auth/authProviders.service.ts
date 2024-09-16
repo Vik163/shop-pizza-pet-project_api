@@ -22,6 +22,9 @@ export class AuthProvidersService {
     // сохраняю в кеше значение сессионого id и  state -----------------------------
     // приходят два запроса первый с id и state, второй undefined (из-за переадресации)
     const sessPizzaId: string = req.cookies.sessPizza;
+    const clientId = this.configService.get<string>('ya.id');
+    const clientSecret = this.configService.get<string>('ya.secret');
+
     const sessId = sessPizzaId && sessPizzaId.split(':')[1].split('.')[0];
     sessId && (await this.cacheManager.set('sessionId', sessId));
 
@@ -42,10 +45,6 @@ export class AuthProvidersService {
 
       if (code && state) {
         await this.cacheManager.del('state');
-        const clientSecret =
-          process.env.YA_CLIENT_SECRET_SERVER || process.env.YA_CLIENT_SECRET;
-        const clientId =
-          process.env.YA_CLIENT_ID_SERVER || process.env.YA_CLIENT_ID;
 
         const body = `grant_type=authorization_code&code=${code}&client_id=${clientId}&client_secret=${clientSecret}`;
         const response = await fetch('https://oauth.yandex.ru/token', {

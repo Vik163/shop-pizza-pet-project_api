@@ -1,5 +1,7 @@
 ### Проверка токенов
 
+**_Время cookie и ttl в настройках сессии должно быть одинаковым с REFRESH токеном_**
+
 - Генерируются в token.servise
 - [Использую @nestjs/passport](https://www.elvisduru.com/blog/nestjs-jwt-authentication-refresh-token)
 - Создаю accessToken.strategy.ts and refreshToken.strategy.ts в папке auth/strategies

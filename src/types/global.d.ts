@@ -16,7 +16,7 @@ declare global {
       ACCESS_SECRET: string;
       REFRESH_SECRET: string;
       CSRF_SECRET: string;
-      TIME_REFRESH: number;
+      TIME_SESS: number;
     }
   }
 }

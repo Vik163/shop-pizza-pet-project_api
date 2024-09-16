@@ -1,6 +1,9 @@
 export interface ConfigProps {
   port: number;
   option: string[];
+  access_secret: string;
+  refresh_secret: string;
+  time_refresh: number;
   api: string;
   mongodb: {
     dbType: string;
@@ -12,8 +15,8 @@ export interface ConfigProps {
   sessions: {
     secretKey: string;
     sessName: string;
-    cookieAge: number;
-    dbAge: number;
+    sessTime: number;
+    dbTime: number;
   };
   ya: {
     id: string;

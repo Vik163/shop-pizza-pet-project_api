@@ -55,10 +55,7 @@ export class AuthService {
       );
 
       // время вышло или нет рефреш => обновляем токен в БД и отправляем токены в куки
-      if (
-        timeToken > process.env.TIME_REFRESH - 2 ||
-        !req.cookies.refreshToken
-      ) {
+      if (timeToken > process.env.TIME_SESS - 2 || !req.cookies.refreshToken) {
         await this.tokensService.updateRefreshToken(user, tokens.refreshToken);
         this.tokensService.sendTokens(res, tokens);
       } else {

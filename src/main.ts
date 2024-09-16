@@ -7,6 +7,7 @@ import { doubleCsrfProtection } from './config/csrf.config';
 import * as passport from 'passport';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import * as cors from 'cors';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const MongoStore = require('connect-mongo');
@@ -27,26 +28,30 @@ async function bootstrap() {
 
   const port = configService.get<number>('port');
   const option = configService.get<string[]>('option');
-  const dbAge = configService.get<number>('sessions.dbAge');
-  const sessCookieAge = configService.get<number>('sessions.cookieAge');
+  const dbTime = configService.get<number>('sessions.dbTime');
+  const sessCookieAge = configService.get<number>('sessions.sessTime');
   const mongoUrl = configService.get<string>('mongodb.mongoUrl');
   const sessName = configService.get<string>('sessions.sessName');
   const secretKey = configService.get<string>('sessions.secretKey');
 
-  app.enableCors({
-    origin: option,
-    methods: 'HEAD,PUT,POST,DELETE,OPTIONS',
-    credentials: true,
-  });
+  app.enableCors();
 
   app.use(cookieParser());
+  app.use(
+    cors({
+      origin: option,
+      methods: 'HEAD,PUT,POST,DELETE,OPTIONS',
+      credentials: true,
+    }),
+  );
 
   app.use(
     session({
       store: MongoStore.create({
         mongoUrl: mongoUrl,
         // 30 дней
-        ttl: dbAge,
+        ttl: dbTime,
+        autoRemove: 'native',
       }),
       name: sessName,
       secret: secretKey,
