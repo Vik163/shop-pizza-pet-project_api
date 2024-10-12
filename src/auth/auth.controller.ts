@@ -13,8 +13,8 @@ import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { UserDto } from 'src/user/dto/user.dto';
 import { AuthProvidersService } from './authProviders.service';
-import { RefreshToken } from 'src/common/decorators/refreshToken.decorator';
 import { TokensService } from './tokens.service';
+import { SessionsService } from './sessions.service';
 
 @Controller()
 export class AuthController {
@@ -22,6 +22,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly authProvidersService: AuthProvidersService,
     private readonly tokensService: TokensService,
+    private readonly sessionsService: SessionsService,
   ) {}
 
   // Первый запрос на определение пользователя ============
@@ -59,8 +60,10 @@ export class AuthController {
   async signout(
     // если res, то отправка через res.send(), иначе не возвращает значение
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<void> {
-    await this.authService.signout(res);
+    await this.tokensService.deleteTokens(res);
+    await this.sessionsService.removeSession(req);
   }
 
   @Get('csrf')
@@ -71,14 +74,19 @@ export class AuthController {
 
   // Запрос на обновление токенов ===========================
   // защитник @RefreshToken
-  @RefreshToken()
+  // @RefreshToken()
   @Get('refresh/:id')
   async updateTokens(
     @Res() res: Response,
     @Req() req: Request,
     @Param('id') id: string,
   ): Promise<void> {
-    await this.tokensService.updateTokens(id, req, res);
+    const result = await this.tokensService.updateTokens(id, req, res);
+    if (!result) {
+      await this.tokensService.deleteTokens(res);
+      await this.sessionsService.removeSession(req);
+    }
+
     res.end('Токены');
   }
 }

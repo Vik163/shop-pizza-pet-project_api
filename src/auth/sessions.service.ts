@@ -124,6 +124,13 @@ export class SessionsService {
       this._res.redirect(`${this._host}?user=${JSON.stringify(this._user)}`);
   }
 
+  async removeSession(req: Request) {
+    const id = req.session.id;
+
+    req.sessionStore.destroy(id, async () => {});
+    req.session.destroy(() => {});
+  }
+
   setSecondVisit() {
     const newData = this.userService.updateUserData(
       this._user.userId,

@@ -166,13 +166,4 @@ export class AuthService {
 
     return { user: userDto, tokens };
   }
-
-  // Выход ===================================================================
-  async signout(res: Response) {
-    res.clearCookie('__Host-psifi.x-csrf-token');
-    res.clearCookie('refreshToken');
-    res.clearCookie('accessToken');
-    // res.clearCookie('sessPizza');
-    res.send({ status: 'success' });
-  }
 }

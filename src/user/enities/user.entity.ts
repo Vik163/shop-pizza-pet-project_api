@@ -2,6 +2,7 @@ import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Birthday, Roles, UserSettings } from '../dto/user.dto';
 import { RefreshTokenDto } from 'src/auth/dto/tokens.dto';
 import { ObjectId } from 'mongoose';
+import { BasketDto } from '../dto/basket.dto';
 
 @Entity()
 export class User {
@@ -23,6 +24,9 @@ export class User {
 
   @Column()
   birthday?: Birthday;
+
+  @Column()
+  basket?: BasketDto[] | null;
 
   @Column()
   role?: Roles;

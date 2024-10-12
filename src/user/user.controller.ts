@@ -27,9 +27,4 @@ export class UserController {
   getUserById(@Param('id') id: string) {
     return this.userService.findById(id);
   }
-
-  // @Post()
-  // signup(@Body() userRequest: UserDto) {
-  //   return this.userService.createUser(userRequest);
-  // }
 }

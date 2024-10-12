@@ -9,6 +9,8 @@ import {
 import session from 'express-session';
 import { ObjectId } from 'mongoose';
 import { RefreshTokenDto } from 'src/auth/dto/tokens.dto';
+import { BasketTotalDto } from './basket-total.dto';
+import { BasketDto } from './basket.dto';
 
 export enum Roles {
   ADMIN = 'ADMIN',
@@ -56,6 +58,7 @@ export class UserDto {
   phoneNumber?: string;
   birthday?: Birthday;
   userSettings?: UserSettings;
+  basket?: BasketDto[] | null;
 
   // @IsNotEmpty()
   // @MinLength(8)

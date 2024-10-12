@@ -24,7 +24,7 @@ export class TokensService {
     return argon2.hash(data);
   }
 
-  // Счетчик времени хранения токена в БД =======================================
+  // Счетчик времени хранения токена в БД (сколько дней уже храниться) =================
   handleTimeToken(date: Date): number {
     //Get 1 day in milliseconds
     const one_day = 1000 * 60 * 60 * 24;
@@ -46,27 +46,33 @@ export class TokensService {
     userId: string,
     req: Request,
     res: Response,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const refreshToken: string = req.cookies.refreshToken;
 
     const user: UserDto = await this.userService.findById(userId);
     // хешированный из БД
     const token = user.refreshTokenData.refreshToken;
-    if (!user || !token) throw new ForbiddenException('Доступ отклонён');
+    if (!user || !token)
+      throw new ForbiddenException(
+        'Доступ отклонён (обновление refresh tokenservise)',
+      );
     // верификация
     const refreshTokenMatches = await argon2.verify(token, refreshToken);
-    if (!refreshTokenMatches) throw new ForbiddenException('Доступ отклонён');
+    if (!refreshTokenMatches)
+      throw new ForbiddenException(
+        'Доступ отклонён (проверка refresh tokenservise)',
+      );
     const tokens = await this.getTokens(user.userId, user.phoneNumber);
 
     const timeToken = this.handleTimeToken(user.refreshTokenData.createToken);
     console.log('timeToken:', timeToken);
     // время вышло => обновляем токен в БД и отправляем токены в куки
-    if (timeToken > this._timeRefresh - 2) {
+    if (timeToken < this._timeRefresh) {
       await this.updateRefreshToken(user, tokens.refreshToken);
       this.sendTokens(res, tokens);
+      return true;
     } else {
-      tokens.refreshToken = undefined;
-      this.sendTokens(res, tokens);
+      return false;
     }
   }
 
@@ -88,14 +94,13 @@ export class TokensService {
         secret:
           this.configService.get<string>('access_secret') ||
           'this is a secret ACCESS_SECRET',
-        expiresIn: '10s',
+        expiresIn: '30s',
       }),
       this.jwtService.signAsync(payload, {
         secret:
           this.configService.get<string>('refresh_secret') ||
           'this is a secret REFRESH_SECRET',
         expiresIn: `${this._timeRefresh}d`,
-        // expiresIn: `${process.env.TIME_REFRESH}d`,
       }),
     ]);
 
@@ -119,5 +124,14 @@ export class TokensService {
   setCsrfToken(req: Request) {
     const csrf = req.csrfToken(true);
     return csrf;
+  }
+
+  // Выход ===================================================================
+  async deleteTokens(res: Response) {
+    res.clearCookie('__Host-psifi.x-csrf-token');
+    res.clearCookie('refreshToken');
+    res.clearCookie('accessToken');
+    res.clearCookie('sessPizza');
+    res.send({ status: 'delete' });
   }
 }

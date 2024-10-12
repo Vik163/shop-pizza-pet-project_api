@@ -7,7 +7,7 @@ export const config = (): ConfigProps => ({
   ],
   access_secret: process.env.ACCESS_SECRET,
   refresh_secret: process.env.REFRESH_SECRET,
-  time_refresh: process.env.TIME_SESS,
+  time_refresh: process.env.TIME_TOKENS, // 15 дней
   // host
   api: process.env.API_URL || 'https://pizzashop163.ru',
   // yandexId ключи
@@ -28,7 +28,7 @@ export const config = (): ConfigProps => ({
     secretKey: process.env.SESSION_SECRET_KEY || 'this is a secret msg',
     sessName: process.env.SESSION_NAME || 'sessPizza',
     // cookieAge: 60 * 60 * 24 * 1000 * 30, // 30 дней
-    sessTime: 60 * 60 * 24 * 1000 * process.env.TIME_SESS, // TIME_SESS дней
-    dbTime: 60 * 60 * 24 * process.env.TIME_SESS, // TIME_SESS дней
+    sessTime: 60 * 60 * 24 * 1000 * process.env.TIME_SESS, // TIME_SESS 150 дней
+    dbTime: 60 * 60 * 24 * process.env.TIME_SESS, // TIME_SESS 150 дней
   },
 });
