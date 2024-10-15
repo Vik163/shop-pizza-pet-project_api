@@ -7,7 +7,7 @@ export class BasketDto {
   readonly sizePizza?: string;
   readonly dia?: number;
   readonly dough?: string;
-  readonly existingOrderId?: string;
+  existingOrderId?: string | undefined;
   readonly additives?: string[];
   totalPrice: number;
   price: number;

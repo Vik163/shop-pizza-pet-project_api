@@ -9,7 +9,6 @@ import {
 import session from 'express-session';
 import { ObjectId } from 'mongoose';
 import { RefreshTokenDto } from 'src/auth/dto/tokens.dto';
-import { BasketTotalDto } from './basket-total.dto';
 import { BasketDto } from './basket.dto';
 
 export enum Roles {

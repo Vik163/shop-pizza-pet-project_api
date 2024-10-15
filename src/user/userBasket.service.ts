@@ -141,8 +141,10 @@ export class UserBasketService {
             }
           } else {
             // добавляет в массив если нет такого
+
             body.id = uuidv4();
             body.quantity = 1;
+            delete body.existingOrderId;
             body.totalPrice = body.price;
 
             user.basket.push(body);
@@ -157,7 +159,7 @@ export class UserBasketService {
           body.id = uuidv4();
           body.quantity = 1;
           body.totalPrice = body.price;
-
+          delete body.existingOrderId;
           this.userRepository.merge(user, { basket: [body] });
 
           await this.userRepository.save(user);
