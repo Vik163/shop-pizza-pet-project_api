@@ -106,7 +106,8 @@
 
   - (дополнительно пришлось поставить `sudo npm install -g bun`) - возможно не нужно
   - Захожу в папку с бекендом и собираю в production `npm run build`
-  - запускаю pm2 `pm2 start dist/src/main.js`, либо создавать [файл конфигурации](https://pm2.keymetrics.io/docs/usage/application-declaration/), при использовании нескольких проектов, в корне проекта ecosystem.config.js c настройками
+  - запускаю pm2 `pm2 start dist/src/main.js`
+  - либо создавать [файл конфигурации](https://pm2.keymetrics.io/docs/usage/application-declaration/), при использовании нескольких проектов, в корне проекта ecosystem.config.js c настройками
 
     ```javascript
     module.exports = {
@@ -123,6 +124,7 @@
     };
     ```
 
+  - `pm2 start ecosystem.config.js`
   - для непрерывной работы `pm2 startup`, закопипастить сообщение, `pm2 save`
 
 10. Добавление баз данных

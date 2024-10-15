@@ -89,7 +89,8 @@ export class UserBasketService {
               }
             } else if (
               !body.additives &&
-              (item.additives.length === 0 || item.additives === undefined)
+              ((item.additives && item.additives.length === 0) ||
+                item.additives === undefined)
             ) {
               return (
                 item.sizePizza === body.sizePizza && item.dough === body.dough
