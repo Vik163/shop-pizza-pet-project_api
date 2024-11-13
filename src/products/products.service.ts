@@ -105,7 +105,7 @@ export class ProductsService {
 
     // настроен, чтобы не было лишнего запроса
     if (offset > totalItems - limit) {
-      // останавливает запросы
+      // останавливает запросы =
       hasMore = false;
     }
 
@@ -118,22 +118,4 @@ export class ProductsService {
       view: viewProduct,
     };
   }
-
-  // async addPizza(createPizzaDTO: CreateCardDto): Promise<CardItem> {
-  //   const newPizza = new this.productsModel(createPizzaDTO);
-  //   return newPizza.save();
-  // }
-
-  // async remove(id: string): Promise<CardItem> {
-  //   return this.productsModel.findByIdAndRemove(id, { lean: true });
-  // }
-
-  // async updatePizza(
-  //   id: string,
-  //   updatePizzaDto: UpdateCardDto,
-  // ): Promise<CardItem> {
-  //   return this.productsModel.findByIdAndUpdate(id, updatePizzaDto, {
-  //     new: true,
-  //   });
-  // }
 }

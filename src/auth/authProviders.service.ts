@@ -10,6 +10,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthProvidersService {
+  timeCache = 600000; // 10 мин
   constructor(
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
@@ -19,21 +20,21 @@ export class AuthProvidersService {
 
   // Авторизация через Яндекс ======================================================
   async authUserByYandex(req: Request, res: Response): Promise<void> {
-    // сохраняю в кеше значение сессионого id и  state -----------------------------
+    // сохраняю в кеше значение сессионого id и  state со временем 30сек -----------------------------
     // приходят два запроса первый с id и state, второй undefined (из-за переадресации)
     const sessPizzaId: string = req.cookies.sessPizza;
+
     const clientId = this.configService.get<string>('ya.id');
     const clientSecret = this.configService.get<string>('ya.secret');
 
     const sessId = sessPizzaId && sessPizzaId.split(':')[1].split('.')[0];
-    sessId && (await this.cacheManager.set('sessionId', sessId));
+    if (sessId)
+      await this.cacheManager.set('sessionId', sessId, this.timeCache);
 
-    const token = {
-      state: req.headers['x-yandex-state'] as string,
-    };
-    token.state && (await this.cacheManager.set('state', token.state));
+    const token = req.headers['x-yandex-state'] as string;
+    if (token) await this.cacheManager.set('state', token, this.timeCache);
+
     // --------------------------------------------------------------------
-
     if (req.url.length > 10) {
       // получение кода и токена из query параметров
       const code = req.query.code as string;

@@ -30,7 +30,7 @@ export class ProductsController {
   }
 
   @Get('popular')
-  getPopularProducts(): Promise<Product[]> {
+  async getPopularProducts(): Promise<Product[]> {
     return this.productsService.getPopularProducts();
   }
 
@@ -43,23 +43,4 @@ export class ProductsController {
   getAddition(): Promise<Product[]> {
     return this.productsService.getAdditions();
   }
-
-  // @Post()
-  // @HttpCode(HttpStatus.CREATED)
-  // addPizza(@Body() createPizzaDto: CreateCardDto): Promise<CardItem> {
-  //   return this.productsService.addPizza(createPizzaDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string): Promise<CardItem> {
-  //   return this.productsService.remove(id);
-  // }
-
-  // @Put(':id')
-  // updatePizza(
-  //   @Body() updatePizzaDto: UpdateCardDto,
-  //   @Param('id') id: string,
-  // ): Promise<CardItem> {
-  //   return this.productsService.updatePizza(id, updatePizzaDto);
-  // }
 }
