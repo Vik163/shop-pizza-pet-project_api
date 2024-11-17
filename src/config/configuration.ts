@@ -7,7 +7,8 @@ export const config = (): ConfigProps => ({
   ],
   access_secret: process.env.ACCESS_SECRET,
   refresh_secret: process.env.REFRESH_SECRET,
-  time_refresh: process.env.TIME_TOKENS, // 15 дней
+  time_refresh: process.env.TIME_TOKENS, // 150 дней
+  time_access: '5s',
   // host
   api: process.env.API_URL || 'https://pizzashop163.ru',
   // yandexId ключи

@@ -81,12 +81,16 @@ export class AuthController {
     @Req() req: Request,
     @Param('id') id: string,
   ): Promise<void> {
-    const result = await this.tokensService.updateTokens(id, req, res);
+    const result = await this.tokensService.updateAccessTokenByRefresh(
+      id,
+      req,
+      res,
+    );
     if (!result) {
-      await this.tokensService.deleteTokens(res);
       await this.sessionsService.removeSession(req);
+      res.end('не авторизован');
     }
 
-    res.end('Токены');
+    res.end('access обновлен');
   }
 }

@@ -4,6 +4,7 @@ export interface ConfigProps {
   access_secret: string;
   refresh_secret: string;
   time_refresh: number;
+  time_access: string;
   api: string;
   mongodb: {
     dbType: string;

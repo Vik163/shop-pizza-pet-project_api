@@ -45,23 +45,8 @@ export class AuthService {
     });
 
     if (user) {
-      const tokens = await this.tokensService.getTokens(
-        user.userId,
-        user.phoneNumber,
-      );
-
-      const timeToken = this.tokensService.handleTimeToken(
-        user.refreshTokenData.createToken,
-      );
-
-      // время вышло или нет рефреш => обновляем токен в БД и отправляем токены в куки
-      if (timeToken > process.env.TIME_SESS - 2 || !req.cookies.refreshToken) {
-        await this.tokensService.updateRefreshToken(user, tokens.refreshToken);
-        this.tokensService.sendTokens(res, tokens);
-      } else {
-        // время не вышло отправляю в куки accessToken
-        res.cookie('accessToken', tokens.accessToken, { secure: true });
-      }
+      const tokens = await this.tokensService.getTokens(user.userId);
+      this.tokensService.sendAccessToken(res, tokens);
 
       // отбираю нужные данные пользователя для клиента, создаю сессию и отправляю на фронт
       const selectedUserData: UserDto = this.selectDataUsers(user);
@@ -94,10 +79,7 @@ export class AuthService {
 
     // Если пользователь есть, генерируем токены, обновляем в БД токен
     if (user) {
-      const tokens = await this.tokensService.getTokens(
-        user.userId,
-        user.phoneNumber,
-      );
+      const tokens = await this.tokensService.getTokens(user.userId);
       await this.tokensService.updateRefreshToken(user, tokens.refreshToken);
 
       // отбираю нужные данные пользователя для клиента и создаю сессию отправляю на фронт
@@ -105,11 +87,12 @@ export class AuthService {
       user = selectedUserData;
       userData = { user, tokens };
 
+      this.tokensService.sendTokens(res, tokens);
       this.sesionsService.handleSession(req, res, selectedUserData, yaProvider);
 
       // Если пользователя нет создаем все
     } else {
-      const newUserData: AuthDto = await this.createUser(userRequest);
+      const newUserData: AuthDto = await this.createUser(res, userRequest);
 
       if (newUserData.user) {
         // отбираю нужные данные пользователя для клиента и создаю сессию отправляю на фронт
@@ -118,6 +101,8 @@ export class AuthService {
         );
         newUserData.user = selectedUserData;
         userData = newUserData;
+
+        this.tokensService.sendTokens(res, newUserData.tokens);
 
         this.sesionsService.handleSession(
           req,
@@ -133,7 +118,7 @@ export class AuthService {
   }
 
   // Создание пользователя =====================================================
-  private async createUser(user: UserDto): Promise<AuthDto> {
+  private async createUser(res: Response, user: UserDto): Promise<AuthDto> {
     const userSettings = {
       isFirstVisit: true,
       addAdvertisement: false,
@@ -146,17 +131,11 @@ export class AuthService {
     user.userSettings = userSettings;
 
     // генерирую токены
-    const tokens = await this.tokensService.getTokens(
-      user.userId,
-      user.phoneNumber,
-    );
+    const tokens = await this.tokensService.getTokens(user.userId);
 
-    // хешируем refresh и создаем user.refreshTokenData для БД
-    const hashedRefreshToken = await this.tokensService.hashData(
-      tokens.refreshToken,
-    );
+    // создаем user.refreshTokenData для БД
     user.refreshTokenData = {
-      refreshToken: hashedRefreshToken,
+      refreshToken: tokens.refreshToken,
       createToken: new Date(),
     };
 

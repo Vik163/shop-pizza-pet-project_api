@@ -94,13 +94,8 @@ export class AuthProvidersService {
     req: Request,
     res: Response,
   ): Promise<void> {
-    const { user, tokens } = await this.authService.handleUser(
-      userRequest,
-      req,
-      res,
-    );
+    const { user } = await this.authService.handleUser(userRequest, req, res);
 
-    this.tokensService.sendTokens(res, tokens);
     res.send(user);
   }
 }
