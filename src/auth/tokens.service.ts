@@ -105,6 +105,6 @@ export class TokensService {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
     res.clearCookie('sessPizza');
-    res.send('не авторизован');
+    res.end();
   }
 }

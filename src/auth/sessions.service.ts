@@ -4,8 +4,8 @@ import { UserDto } from 'src/user/dto/user.dto';
 import session from 'express-session';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { UserService } from 'src/user/user.service';
 import { ConfigService } from '@nestjs/config';
+import { UserService } from 'src/user/user.service';
 
 type TSess = session.Session & Partial<session.SessionData>;
 interface ISession extends TSess {
@@ -26,7 +26,7 @@ export class SessionsService {
   constructor(
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
-    private readonly userService: UserService,
+    private userService: UserService,
     private configService: ConfigService,
   ) {
     this._host = this.configService.get<string>('api');

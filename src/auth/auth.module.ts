@@ -8,11 +8,11 @@ import { SessionsService } from './sessions.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
-import { UserService } from 'src/user/user.service';
 import { AuthProvidersService } from './authProviders.service';
 import { TokensService } from './tokens.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users as UsersEntity } from 'src/user/enities/users.entity';
+import { UserService } from 'src/user/user.service';
 
 @Module({
   imports: [

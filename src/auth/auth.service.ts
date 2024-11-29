@@ -10,13 +10,14 @@ import { AuthDto } from './dto/auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users as UsersEntity } from 'src/user/enities/users.entity';
+import { AccessToken } from 'src/common/decorators/accessToken.decorator';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UsersEntity)
     private readonly userRepository: Repository<UsersEntity>,
-    private readonly sesionsService: SessionsService,
+    private readonly sessionsService: SessionsService,
     private readonly tokensService: TokensService,
     // @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
@@ -35,6 +36,7 @@ export class AuthService {
 
   // получаем пользователя по id или возвращаем "не найден"
   // получаем время хранения =====================================================
+  @AccessToken()
   async getInitialUserById(
     id: string,
     req: Request,
@@ -50,7 +52,7 @@ export class AuthService {
 
       // отбираю нужные данные пользователя для клиента, создаю сессию и отправляю на фронт
       const selectedUserData: UserDto = this.selectDataUsers(user);
-      this.sesionsService.handleSession(req, res, selectedUserData);
+      this.sessionsService.handleSession(req, res, selectedUserData);
 
       res.send(selectedUserData);
     } else {
@@ -88,7 +90,12 @@ export class AuthService {
       userData = { user, tokens };
 
       this.tokensService.sendTokens(res, tokens);
-      this.sesionsService.handleSession(req, res, selectedUserData, yaProvider);
+      this.sessionsService.handleSession(
+        req,
+        res,
+        selectedUserData,
+        yaProvider,
+      );
 
       // Если пользователя нет создаем все
     } else {
@@ -104,7 +111,7 @@ export class AuthService {
 
         this.tokensService.sendTokens(res, newUserData.tokens);
 
-        this.sesionsService.handleSession(
+        this.sessionsService.handleSession(
           req,
           res,
           selectedUserData,

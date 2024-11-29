@@ -23,11 +23,6 @@ export class UserService {
     };
   }
 
-  async getUsers(): Promise<UserDto[]> {
-    const usersData: UserDto[] = await this.userRepository.find();
-    return usersData;
-  }
-
   async updateUserData(id: string, updateUserDto: UserDto): Promise<UserDto> {
     try {
       const user = (await this.userRepository.findOne({

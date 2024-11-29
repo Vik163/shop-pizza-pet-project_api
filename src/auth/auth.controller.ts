@@ -7,14 +7,17 @@ import {
   Req,
   Res,
   ValidationPipe,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 import { Request, Response } from 'express';
-import { AuthService } from './auth.service';
+// import { AuthService } from './auth.service';
 import { UserDto } from 'src/user/dto/user.dto';
 import { AuthProvidersService } from './authProviders.service';
 import { TokensService } from './tokens.service';
 import { SessionsService } from './sessions.service';
+import { AuthService } from './auth.service';
+import { AccessToken } from 'src/common/decorators/accessToken.decorator';
 
 @Controller()
 export class AuthController {
@@ -26,6 +29,7 @@ export class AuthController {
   ) {}
 
   // Первый запрос на определение пользователя ============
+  @AccessToken()
   @Get('auth/:id')
   async getInitialUserById(
     @Param('id') id: string,
@@ -80,7 +84,7 @@ export class AuthController {
     @Res() res: Response,
     @Req() req: Request,
     @Param('id') id: string,
-  ): Promise<void> {
+  ): Promise<{ message: string } | void> {
     const result = await this.tokensService.updateAccessTokenByRefresh(
       id,
       req,
@@ -88,9 +92,10 @@ export class AuthController {
     );
     if (!result) {
       await this.sessionsService.removeSession(req);
-      res.end('не авторизован');
+      throw new UnauthorizedException();
     }
 
-    res.end('access обновлен');
+    res.status(200).end('access обновлен');
+    return { message: 'access обновлен' };
   }
 }
