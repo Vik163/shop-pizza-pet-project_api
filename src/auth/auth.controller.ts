@@ -17,7 +17,6 @@ import { AuthProvidersService } from './authProviders.service';
 import { TokensService } from './tokens.service';
 import { SessionsService } from './sessions.service';
 import { AuthService } from './auth.service';
-import { AccessToken } from 'src/common/decorators/accessToken.decorator';
 
 @Controller()
 export class AuthController {
@@ -29,7 +28,6 @@ export class AuthController {
   ) {}
 
   // Первый запрос на определение пользователя ============
-  @AccessToken()
   @Get('auth/:id')
   async getInitialUserById(
     @Param('id') id: string,
