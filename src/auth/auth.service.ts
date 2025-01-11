@@ -10,7 +10,6 @@ import { AuthDto } from './dto/auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users as UsersEntity } from 'src/user/enities/users.entity';
-import { AccessToken } from 'src/common/decorators/accessToken.decorator';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +35,6 @@ export class AuthService {
 
   // получаем пользователя по id или возвращаем "не найден"
   // получаем время хранения =====================================================
-  @AccessToken()
   async getInitialUserById(
     id: string,
     req: Request,

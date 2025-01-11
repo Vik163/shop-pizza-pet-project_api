@@ -1,19 +1,22 @@
-{
-  "name": "backend-shop",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
-  "public": true,
-  "license": "UNLICENSED",
-  "scripts": {
-    "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
-  },
+# О Проекте
+
+Проект создавал как вспомогательный для frontend.  
+На курсах Яндекс Практикум изучал Express.js и TypeScript.
+Теперь считаю, что без TypeScript никуда, поэтому выбрал NestJS.  
+Практики с ним не было, но логика построения простого backend понятна.  
+Насколько удачно вышло судить не могу, не бэкендер. Полуфабрикатами не пользовался, люблю все свое.
+
+Кратко:
+
+- База данных - mongoDB;
+- TypeORM - применил для пагинации. Не углублялся;
+- авторизация - Firebase (по телефону), Яндекс ID;
+- безопасность - AccessToken, RefreshToken, CSRF;
+- сессии - просто заморочился
+
+Установленные пакеты:
+
+```
   "dependencies": {
     "@nestjs/cache-manager": "^2.2.1",
     "@nestjs/common": "^10.2.1",
@@ -64,21 +67,4 @@
     "tsconfig-paths": "4.2.0",
     "typescript": "^5.1.6"
   },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
-  }
-}
+```

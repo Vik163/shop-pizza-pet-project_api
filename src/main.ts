@@ -72,7 +72,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.use(passport.initialize());
-  app.use(doubleCsrfProtection);
+  // app.use(doubleCsrfProtection);
 
   await app.listen(port);
   console.log(`server listen port ${port}`);

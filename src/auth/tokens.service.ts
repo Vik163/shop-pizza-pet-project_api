@@ -94,10 +94,10 @@ export class TokensService {
     res.cookie('accessToken', tokens.accessToken, { secure: true });
   }
 
-  setCsrfToken(req: Request) {
-    const csrf = req.csrfToken(true);
-    return csrf;
-  }
+  // setCsrfToken(req: Request) {
+  //   const csrf = req.csrfToken(true);
+  //   return csrf;
+  // }
 
   // Выход ===================================================================
   async deleteTokens(res: Response) {
