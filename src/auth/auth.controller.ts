@@ -71,10 +71,9 @@ export class AuthController {
   }
 
   @Get('csrf')
-  async csrf(@Req() req: Request): Promise<string> {
+  async csrf(@Req() req: Request, @Res() res: Response): Promise<void> {
     const csrf = req.csrfToken(true);
-    console.log('csrf:', csrf);
-    return csrf;
+    res.status(200).end(csrf); // нужно после отправки куки
   }
 
   // Запрос на обновление токенов ===========================
