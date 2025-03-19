@@ -100,7 +100,7 @@
   - переходим `cd /etc/nginx/sites-available` создаем файл конфиг `sudo touch имя_файла`
   - сразу выполняем `sudo ln -s /etc/nginx/sites-available/имя_файла /etc/nginx/sites-enabled/имя_файла` проверяем ссылку
   - проверка конфигурации `sudo nginx -t`
-  - перезагрузка `sudo systemctl restart nginx`
+  - перезагрузка `sudo systemctl restart nginx` или `nginx -s reload`
   - устанавливаю SSL-сертификат (от Letsencrypt для тестов) (в nestjs свои сертификаты)
 
 - [pm2](https://pm2.keymetrics.io/docs/usage/quick-start/)
